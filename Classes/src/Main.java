@@ -9,29 +9,26 @@ public class Main {
         while (!quit) {
             if (newGame(sc) < 0) {
                 Game.quickGame(sc);
-                System.out.println("Do you want to keep playing? (Y/N)");
-                String input = sc.nextLine().toLowerCase();
-                boolean validate = false;
-                while (!validate) {
-                    if ("y".equals(input)) {
-                        System.out.println("As you wish.");
-                        validate = true;
-                    } else if ("n".equals(input)) {
-                        System.out.println("As you wish.");
-                        quit = true;
-                        validate = true;
-                    } else {
-                        System.out.println("Y is for yes and N for no. You got that right? Let's try again:");
-                        input = sc.nextLine().toLowerCase();
-                    }
-                }
+                quit = keepPlaying(sc);
             } else {
-                System.out.println("Game functionality not yet designed.");
+                Player player = newPlayer(sc);
+                System.out.println("Up until what level do you want to play?");
+                int input = sc.nextInt();
+                sc.nextLine();
+                Game.setLvlToWin(input);
+                int gameNo = 1;
+                while (player.getLvl() < Game.getLvlToWin()) {
+                    System.out.format("___________R O U N D   # %d ___________\n\n", gameNo);
+                    Game.gameRound(sc, player);
+                    gameNo++;
+                }
+                System.out.format("Congratulations, %s! You won the game.\n", player.getUsername());
+                quit = keepPlaying(sc);
             }
         }
-
-
+        System.out.println("Thank you for playing! See you next time :)");
     }
+
 
     static void openMessage() {
         System.out.println("___________________Rock__Paper__Scissors___________________");
@@ -45,7 +42,26 @@ public class Main {
         System.out.println("_________________________________________________________________________");
     }
 
-    static Player newPlayer (Scanner sc) {
+    static boolean keepPlaying(Scanner sc) {
+        System.out.println("Do you want to keep playing? (Y/N)");
+        String input = sc.nextLine().toLowerCase();
+        boolean validate = false;
+        while (!validate) {
+            if ("y".equals(input)) {
+                System.out.println("As you wish.");
+                validate = true;
+            } else if ("n".equals(input)) {
+                System.out.println("As you wish.");
+                return true;
+            } else {
+                System.out.println("Y is for yes and N for no. You got that right? Let's try again:");
+                input = sc.nextLine().toLowerCase();
+            }
+        }
+        return false;
+    }
+
+    static Player newPlayer(Scanner sc) {
         System.out.println("First things first. If we're to keep track of your progress I need a name. How should I call you?");
         String name = sc.nextLine();
         boolean commit = false;
@@ -88,3 +104,4 @@ public class Main {
         }
     }
 }
+

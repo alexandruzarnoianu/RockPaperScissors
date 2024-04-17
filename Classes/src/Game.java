@@ -3,15 +3,15 @@ import java.util.Random;
 import java.util.Scanner;
 
 public class Game {
-    private int lvlToWin;
+    private static int lvlToWin;
     private static final int roundXp = 5;
     private static final int gameXp = 10;
 
-    public Game(int lvlToWin) {
-        this.lvlToWin = lvlToWin;
+    public static void setLvlToWin(int value) {
+        lvlToWin = value;
     }
 
-    public int getLvlToWin() {
+    public static int getLvlToWin() {
         return lvlToWin;
     }
 
@@ -22,7 +22,26 @@ public class Game {
         return gameXp;
     }
 
-    public static boolean quickGame(Scanner sc) {
+    public static void gameRound(Scanner sc, Player player) {
+        int compScore = 0;
+        while (compScore != 2 && player.getRoundScore() != 2) {
+            int score = quickGame(sc);
+            if (score > 0) {
+                player.addRoundScore(1);
+                player.addXp(roundXp);
+            } else if (score < 0) {
+                compScore++;
+            }
+            System.out.format("%s's score: %d\nMy score: %d\n",player.getUsername(),
+                    player.getRoundScore(), compScore);
+        }
+        if (player.getRoundScore() == 2) {
+            System.out.println("You won the round!");
+            player.addXp(gameXp);
+        }
+        player.resetScore();
+    }
+    public static int quickGame(Scanner sc) {
         Random random = new Random();
         HashMap<Integer, String> RPS = new HashMap<Integer, String>();
         RPS.put(0, "Rock");
@@ -39,11 +58,15 @@ public class Game {
         int computerInput = random.nextInt(3);
         boolean playerWon = playerWonRound(playerInput, computerInput);
         if (playerWon) {
-            System.out.format("You chose %s and I chose %s. You won.", RPS.get(playerInput - 1), RPS.get(computerInput));
-            return true;
+            System.out.format("You chose %s and I chose %s. You won.\n\n", RPS.get(playerInput - 1), RPS.get(computerInput));
+            return 1;
         }
-        System.out.format("You chose %s and I chose %s. You didn't win this time.", RPS.get(playerInput - 1), RPS.get(computerInput));
-        return false;
+        if (playerInput == computerInput + 1) {
+            System.out.format("You chose %s and I chose %s. Looks like it's a draw.\n\n", RPS.get(playerInput - 1), RPS.get(computerInput));
+            return 0;
+        }
+        System.out.format("You chose %s and I chose %s. You didn't win this time.\n\n", RPS.get(playerInput - 1), RPS.get(computerInput));
+        return -1;
     }
 
     private static boolean playerWonRound(int playerInput, int computerInput) {

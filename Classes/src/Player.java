@@ -2,7 +2,6 @@ public class Player {
 
     private String username;
     private int roundScore;
-    private int gameScore;
     private int xp;
     private int lvl;
 
@@ -24,16 +23,11 @@ public class Player {
         return roundScore;
     }
 
-    public void setRoundScore(int roundScore) {
-        this.roundScore = roundScore;
+    public void addRoundScore(int roundScore) {
+        this.roundScore += roundScore;
     }
-
-    public int getGameScore() {
-        return gameScore;
-    }
-
-    public void setGameScore(int gameScore) {
-        this.gameScore = gameScore;
+    public void resetScore() {
+        this.roundScore = 0;
     }
 
     public int getXp() {
